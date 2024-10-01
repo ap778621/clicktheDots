@@ -57,7 +57,7 @@ public class GameLogic : MonoBehaviour
 
         }
         //Count game timer down
-        timer_text.text = "Time: " + game_timer; //Make timer read off the correct time.
+        timer_text.text = "Time: " + Mathf.Floor(game_timer); //Make timer read off the correct time.
 
         //If we click the left mouse button.
         if (Input.GetMouseButtonDown(0))
@@ -67,13 +67,24 @@ public class GameLogic : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(world_point, Vector2.zero);
 
             //if something was hit...
-            if (hit.collider != null)
+            if (hit.collider != null && !hit.collider.gameObject.GetComponent<dot>().audio_source.isPlaying)
             {
+                //store the dot we clicked on in a variable 
+                GameObject Dot = hit.collider.gameObject;
+
+                //have dot play the sound 
+                Dot.GetComponent<SpriteRenderer>().enabled = false;
+                Dot.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+
+
+
+
+
                //Destroy the game object.
-               Destroy(hit.collider.gameObject);
+               Destroy(hit.collider.gameObject, Dot.GetComponent<dot>().audio_source.clip.length);
 
                 //Add to score
-                score += hit.collider.gameObject.GetComponent<dot>().point_value;
+                score += Dot.GetComponent<dot>().point_value;
 
                 //Update score text 
                 score_text.text = "Score: " + score;
